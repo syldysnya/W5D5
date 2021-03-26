@@ -1,14 +1,9 @@
 def what_was_that_one_with(those_actors)
   # Find the movies starring all `those_actors` (an array of actor names).
   # Show each movie's title and id.
-  array = Movie.joins(:actors)
+  Movie.joins(:actors)
        .where("actors.name IN (?)", those_actors[0])
        .select(:title, :id)
-  array2 = Movie.joins(:actors)
-       .where("actors.name IN (?)", those_actors[1])
-       .select(:title, :id)
-
-  array & array2
   
 end
 
@@ -34,7 +29,15 @@ def costars(name)
   # List the names of the actors that the named actor has ever
   # appeared with.
   # Hint: use a subquery
+  movies = Movie.joins(:actors)
+       .where("actors.name = ?", name)
+       .pluck(:title)
 
+  Movie.joins(:actors)
+       .where("title IN (?)", movies)
+       .group("actors.id")
+       .where("actors.name != ?", name)
+       .pluck("actors.name")
 end
 
 def actor_out_of_work
