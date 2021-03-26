@@ -1,14 +1,33 @@
 def what_was_that_one_with(those_actors)
   # Find the movies starring all `those_actors` (an array of actor names).
   # Show each movie's title and id.
-  Movie.joins(:actors)
-       .where("actors.name IN (?)", those_actors)
+  array = Movie.joins(:actors)
+       .where("actors.name IN (?)", those_actors[0])
        .select(:title, :id)
+  array2 = Movie.joins(:actors)
+       .where("actors.name IN (?)", those_actors[1])
+       .select(:title, :id)
+
+  array & array2
+  
 end
 
 def golden_age
   # Find the decade with the highest average movie score.
-
+  decade_averages = Hash.new {|h,k| h[k] = []}
+  movies_by_decade = Movie.all.map do |movie| 
+    decade = movie.yr / 10 * 10
+    decade_averages[decade] << movie.score
+  end
+  max_average = 0
+  max_decade = nil
+  decade_averages.each do |k,v|
+    test_average = v.sum / (v.length*1.0)
+    if max_average < test_average
+        max_decade = k 
+    end
+  end
+  max_decade
 end
 
 def costars(name)
