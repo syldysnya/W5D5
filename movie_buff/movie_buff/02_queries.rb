@@ -2,12 +2,17 @@ def eighties_b_movies
   # List all the movies from 1980-1989 with scores falling between
   # 3 and 5 (inclusive).
   # Show the id, title, year, and score.
+  Movie.where("yr BETWEEN ? AND ?", 1980, 1989)
+       .where(score: (3.0..5.0))
+       .select(:id, :title, :yr, :score)
 
 end
 
 def bad_years
   # List the years in which a movie with a rating above 8 was not released.
-
+  Movie.where.not("score > ?", 8.0)
+       .group(:yr)
+       .pluck(:yr)
 end
 
 def cast_list(title)
